@@ -2,38 +2,37 @@
 #include <stdio.h>
 #include "lab3.h"
 
-void makePlane(int xleft, int xright, int ybottom, int ytop) {
-    
-    for ( int j = 0; j < ytop; j++) {
-        for( int i = 0; i < xleft; i++) {
-            printf(" ");
-        }
-        printf("|");
-        for( int i = 0; i < xright; i++) {
-            printf(" ");
-        }
-        printf("\n");
+
+
+char valAt(double a, double b, double c, int x, int y, double s) {
+    int f_val = ((a * pow(x, 2) + b * x + c) * s) / 1;
+    // printf("%d", f_val);
+
+    if(f_val == y) {
+        return '*';
     }
-    for( int i = 0; i < xleft; i++) {
-        printf("-");
+    else if(x == 0 && y == 0) {
+        return '+';
     }
-    printf("+");
-    for( int i = 0; i < xright; i++) {
-        printf("-");
+    else if (x == 0) {
+        return '|';
     }
-    printf("\n");
-     for ( int j = 0; j < ybottom; j++) {
-        for( int i = 0; i < xleft; i++) {
-            printf(" ");
-        }
-        printf("|");
-        for( int i = 0; i < xright; i++) {
-            printf(" ");
-        }
-        printf("\n");
+    else if (y == 0) {
+        return '-';
+    }
+    else {
+        return ' ';
     }
 }
 
-void graph(double a, double b, double c, double step, int xleft, int xright, int ybottom, int ytop) {
-    makePlane(xleft, xright, ybottom, ytop);
+void makeRow(double a, double b, double c, double s, int xleft, int xright, int y) {
+    for( int i = xleft; i <= xright; i++) {
+        printf("%c", valAt(a, b, c, i, y, s));
+    }
+    printf("\n");
+}
+void graph(double a, double b, double c, double s, int xleft, int xright, int ybottom, int ytop) {
+    for(int j = ytop; j >= ybottom; j--) {
+        makeRow(a, b, c, s, xleft, xright, j);
+    }
 }
