@@ -49,34 +49,29 @@ void common_divisors(unsigned int n, unsigned int m) {
     printf("\n");
 }
 
-// helper factorial
-unsigned int factorial(unsigned int val) {
-    for(int i = val; i >= 1; i--) {
-        val *= i;
-    }
-    return val;
-}
-
 unsigned int legal_keys(unsigned char depths, unsigned char macs) {
-    unsigned int variations = 0;
-    unsigned int combinations = 1;
 
-    for(int q = 0; q < 4; q++){
-        for(int i = 1; i <= depths; i++) {
-            for(int j = 0; j <= macs; j++) {
-                // bottom range
-                if( i - j > 1 ) {
-                    variations += 1;
+    unsigned int combinations = 0;
+
+    if(depths == 1) { return 1; };
+
+    for(int i = 0; i < 4; i++) {
+        for(int k = 1; k <= depths; k++) {
+            // printf("k: %d\n", k);
+            for(int m = 1; m <= macs; m++) {
+                if ( k + m  <= depths )
+                {
+                    // printf("k+m: %d\n", k + m);
+                    combinations++;
                 }
-                // top range
-                if ( i + j < depths ) {
-                    variations += 1;
+            }
+            for(int m = 0; m <= macs; m++) {
+                if ( k - m >= 1) {
+                    // printf("k-m: %d\n", k - m);
+                    combinations++;
                 }
             }
         }
-        combinations *= variations;
-        variations = 0;
     }
-
     return combinations;
 }
