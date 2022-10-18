@@ -103,6 +103,7 @@ unsigned int periods_for_yield(double rate, double yield) {
     return periods;
 }
 
+
 void pattern(unsigned char side, unsigned char width, unsigned char height) {
     unsigned int space = 0;
     for(int h = 0; h < height; h++) {
