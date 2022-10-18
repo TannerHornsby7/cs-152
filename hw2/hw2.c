@@ -17,6 +17,7 @@ unsigned char tens_letters(unsigned char number) {
     case '9':
         return '5';
         break;
+    case '0':
     case '5':
         return '4';
         break;
@@ -25,6 +26,7 @@ unsigned char tens_letters(unsigned char number) {
         return '6';
         break;
     default:
+        printf("Enter a char of the form 0-9");
         exit(1);
         break;
     }
@@ -45,4 +47,36 @@ void common_divisors(unsigned int n, unsigned int m) {
         }
     }
     printf("\n");
+}
+
+// helper factorial
+unsigned int factorial(unsigned int val) {
+    for(int i = val; i >= 1; i--) {
+        val *= i;
+    }
+    return val;
+}
+
+unsigned int legal_keys(unsigned char depths, unsigned char macs) {
+    unsigned int variations = 0;
+    unsigned int combinations = 1;
+
+    for(int q = 0; q < 4; q++){
+        for(int i = 1; i <= depths; i++) {
+            for(int j = 0; j <= macs; j++) {
+                // bottom range
+                if( i - j > 1 ) {
+                    variations += 1;
+                }
+                // top range
+                if ( i + j < depths ) {
+                    variations += 1;
+                }
+            }
+        }
+        combinations *= variations;
+        variations = 0;
+    }
+
+    return combinations;
 }
