@@ -1,0 +1,12 @@
+# files that we don't want in the repos
+
+# macOS finder state
+.DS_Store
+
+# DrRacket backup files
+*.rkt~
+*.bak
+\#*.rkt\#1\#
+
+# compiled CS 151 code
+**/compiled
