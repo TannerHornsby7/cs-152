@@ -14,6 +14,7 @@ void print_header(int side_length) {
     printf("%d\n", MAX_RGB);
 }
 
+
 void draw_waves(int side_length, int x_offset, int y_offset) {
     // calculating the real offset values
     int x_foff = (side_length / 2) + x_offset; // adjusted offsets
