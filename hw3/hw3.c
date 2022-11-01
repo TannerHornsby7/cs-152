@@ -99,3 +99,34 @@ int* merge(int* a, unsigned int alen, int* b, unsigned int blen) {
 
     return res;
 }
+
+unsigned int is_prime(unsigned v) {
+    if (v == 0 || v == 1) return 0;
+    for(unsigned int i = 2; i < v; i++) {
+        if(v % i == 0) return 0;
+    }
+    
+    return 1;
+}
+
+unsigned int* primes_in_range(unsigned int lb, unsigned int ub,
+ unsigned int* len) {
+    unsigned int count = 0;
+    for(unsigned int i = lb; i <= ub; i++) {
+        if(is_prime(i)) {
+            count++;
+        }
+    }
+    *len = count;
+
+    unsigned int* primes = (unsigned int*)malloc(sizeof(int) * count);
+    int j = 0;
+
+    for(unsigned int i = lb; i <= ub; i++) {
+        if(is_prime(i)) {
+            primes[j++] = i;
+        }
+    }
+    
+    return primes;
+}

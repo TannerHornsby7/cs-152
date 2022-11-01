@@ -21,3 +21,7 @@ void reverse(int a[], unsigned int alen);
 
 // produces a merged list from two arrays
 int* merge(int* a, unsigned int alen, int* b, unsigned int blen);
+
+// finds all primes within a given boundary
+unsigned int* primes_in_range(unsigned int lb, unsigned int ub,
+ unsigned int* len);
