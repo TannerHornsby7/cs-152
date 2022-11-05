@@ -5,5 +5,5 @@ evidence_waves: waves.h waves.c evidence_waves.c
 clean:
 	rm -f evidence_waves waves *.o *~ *.ppm
 show:
-	./waves > my-image.ppm
+	./waves -s 1000 -g 200 > my-image.ppm
 	display my-image.ppm

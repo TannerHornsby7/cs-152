@@ -9,8 +9,6 @@ void evidence_dist() {
     printf("Evidence dist, expecting 1.414214: %f\n", dist(1, 2, 1, 2)); // reg
     printf("Evidence dist, expecting 1.414214: %f\n", dist(2, 1, 2, 1)); // inv
     printf("Evidence dist, expecting 14.14...: %f\n", dist(1, 11, 1, 11));
-
-    // printf("Evidence dist, expecting 1", dist(1, 1, 2, 2));
 }
 
 /* main: run the evidence functions above */

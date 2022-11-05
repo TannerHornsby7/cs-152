@@ -4,6 +4,6 @@
 
 int main(int argc, char *argv[])
 {
-    draw_waves(200, 0, 0);
+    cmds_to_draw(argc, argv);
     return 0;
 } 
