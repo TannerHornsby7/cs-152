@@ -18,7 +18,7 @@ unsigned int fib(unsigned int n)
   else if (n==1)
     return 1;
   else
-    return fib(n-1) + fib(n);
+    return fib(n-1) + fib(n-2);
 }
 
 /* === fact === */
@@ -39,7 +39,7 @@ unsigned int fact(unsigned int n)
  */
 int *int_new(int init)
 {
-  int *n;
+  int *n = (int*)malloc(sizeof(int));
   *n = init;
   return n;
 }
