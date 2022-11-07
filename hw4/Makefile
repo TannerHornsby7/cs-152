@@ -1,4 +1,4 @@
-evidence_hw3: hw3.h hw3.c evidence_hw3.c
-	clang -lm -Wall -o evidence_hw3 hw3.c evidence_hw3.c
+evidence_hw4: hw4.h hw4.c evidence_hw4.c
+	clang -lm -Wall -o evidence_hw4 hw4.c evidence_hw4.c
 clean:
-	rm -f evidence_hw3 *.o *~
+	rm -f evidence_hw4 *.o *~
