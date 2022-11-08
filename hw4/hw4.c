@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include "hw4.h"
 
 char* flip_case(char* s){
@@ -127,7 +128,62 @@ struct measurement add_measurements(struct measurement m1, struct measurement m2
         exit(1);
     }
     else{
-        struct measurement res = { m1.value + m2.value, m1.units, m1.exponent};
+        struct measurement res = { m1.value + m2.value, strdup(m1.units), m1.exponent};
         return res;
     }
 }
+
+
+struct measurement scale_measurement(struct measurement m, double lambda) {
+    struct measurement res = { m.value * lambda, strdup(m.units), m.exponent};
+    return res;
+}
+
+
+struct measurement multiply_measurements(struct measurement m1, struct measurement m2) {
+    if (m1.units != m2.units){
+        printf("Error: Units Must Match: %s vs %s", m1.units, m2.units);
+        exit(1);
+    }
+    else{
+        struct measurement res = { m1.value * m2.value, strdup(m1.units), m1.exponent + m2.exponent};
+        return res;
+    }
+}
+
+char* measurement_tos(struct measurement m) {
+    char res[100];
+    if(m.exponent == 1) {
+        sprintf(res, "%f %s", m.value, m.units);
+        return strdup(res);
+    }
+    else {
+        sprintf(res, "%f %s^%d", m.value, m.units, m.exponent);
+        return strdup(res);
+    }
+}
+
+
+struct measurement convert_units(struct conversion* conversions,
+                                 unsigned int n_conversions,
+                                 struct measurement m, 
+                                 char* to) {
+    int found = 0, i = 0;
+    for(i = 0; i < n_conversions; i++) {
+        if(!strcmp(conversions[i].to, to) && !strcmp(conversions[i].from, m.units)) {
+            found = 1;
+            break;
+        }
+    }
+
+    if(!found) {
+        printf("Error: no conversion found!");
+        exit(1);
+    }
+
+    struct measurement res = { m.value * pow(conversions[i].mult_by, m.exponent), strdup(conversions[i].to), m.exponent };
+
+
+    return res;
+}
+

@@ -46,57 +46,66 @@ void evidence_concat_strings() {
 }
 
 // measurements and conversions tests
-struct measurement t1 = {2, "meters", 2};
-struct measurement t2 = {4, "meters", 2};
-struct measurement t3 = {10, "feet", 1};
-struct measurement t4 = {8, "feet", 2};
-struct measurement t5 = {14.2, "feet", 2};
+struct measurement t1 = {2, "m", 2};
+struct measurement t2 = {4, "m", 2};
+struct measurement t3 = {10, "ft", 1};
+struct measurement t4 = {8, "ft", 2};
+struct measurement t5 = {14.2, "ft", 2};
 
 
 void evidence_measurements_conversions() {
     printf("\n==== Evidence: Measurements ====\n");
 
-    // adding
-    printf("Expecting 6 meters: %f %s\n", add_measurements(t1, t2).value, t2.units);
-    //printf("Expecting Error:");
-    //add_measurements(t2, t3);
-    //printf("Expecting Error:");
-    //add_measurements(t3, t4);
-    printf("Expecting 22.2 meters: %f %s\n", add_measurements(t4, t5).value, t5.units);
+    // // adding
+    // printf("Expecting 6 meters: %f %s\n", add_measurements(t1, t2).value, t2.units);
+    // printf("Expecting Error:");
+    // add_measurements(t2, t3);
+    // printf("Expecting Error:");
+    // add_measurements(t3, t4);
+    // printf("Expecting 22.2 feet: %f %s\n", add_measurements(t4, t5).value, t5.units);
 
-    // scaling
-     printf("Expecting 6 meters: %f %s\n", add_measurements(t1, t2).value, t2.units);
-    //printf("Expecting Error:");
-    //add_measurements(t2, t3);
-    //printf("Expecting Error:");
-    //add_measurements(t3, t4);
-    printf("Expecting 22.2 meters: %f %s\n", add_measurements(t4, t5).value, t5.units);
+    // // scaling
+    //  printf("Expecting 14 meters: %f %s\n", scale_measurement(t1, 7).value, t1.units);
+    // printf("Expecting 142 feet: %f %s\n", scale_measurement(t5, 10).value, t5.units);
 
     // measure products
-     printf("Expecting 6 meters: %f %s\n", add_measurements(t1, t2).value, t2.units);
-    //printf("Expecting Error:");
-    //add_measurements(t2, t3);
-    //printf("Expecting Error:");
-    //add_measurements(t3, t4);
-    printf("Expecting 22.2 meters: %f %s\n", add_measurements(t4, t5).value, t5.units);
-
-    // measure to string
-     printf("Expecting 6 meters: %f %s\n", add_measurements(t1, t2).value, t2.units);
-    //printf("Expecting Error:");
-    //add_measurements(t2, t3);
-    //printf("Expecting Error:");
-    //add_measurements(t3, t4);
-    printf("Expecting 22.2 meters: %f %s\n", add_measurements(t4, t5).value, t5.units);
+    struct measurement prod1 = multiply_measurements(t1, t2);
+    // struct measurement prod2 = multiply_measurements(t2, t3); // repor error
+    struct measurement prod3 = multiply_measurements(t3, t4);
+    struct measurement prod4 = multiply_measurements(t4, t5);
 
     
+     printf("mul: Expecting 8 meters ^ 4: %f %s ^ %d\n", prod1.value, prod1.units, prod1.exponent);
+     printf("mul: Expecting 80 feet ^ 3: %f %s ^ %d\n", prod3.value, prod3.units, prod3.exponent);
+     printf("mul: Expecting 113.6 fet ^ 4: %f %s ^ %d\n", prod4.value, prod4.units, prod4.exponent);
+
+    // measure to string
+    printf("\n");
+    printf("tos: Expecting 10 feet: %s\n", measurement_tos(t3));
+    printf("tos: Expecting 8 meters^4: %s\n", measurement_tos(prod1));
+    printf("tos: Expecting 80 feet^3: %s\n", measurement_tos(prod3));
+    printf("tos: Expecting 113.6 feet^4: %s\n", measurement_tos(prod4));
+
 
     printf("\n==== Evidence: Conversions ====\n");
-    printf("Expecting 6 meters: %f %s\n", add_measurements(t1, t2).value, t2.units);
-    //printf("Expecting Error:");
-    //add_measurements(t2, t3);
-    //printf("Expecting Error:");
-    //add_measurements(t3, t4);
-    printf("Expecting 22.2 meters: %f %s\n", add_measurements(t4, t5).value, t5.units);
+
+    struct conversion t_conv1 = {"in", "cm", 2.54}; // in to cm
+    struct conversion t_conv2 = {"ft", "in", 12};   // ft to in
+    struct conversion t_conv3 = {"ft", "in", .083}; // in to ft
+
+    struct conversion conversions[] = {t_conv1, t_conv2, t_conv3};
+
+    struct measurement t3_conv = convert_units(conversions, 3, t3, "in");
+    struct measurement t4_conv = convert_units(conversions, 3, t4, "in");
+    struct measurement t5_conv = convert_units(conversions, 3, t5, "in");
+
+
+    printf("conv: Expecting 120 inches: %f %s^%d\n", t3_conv.value, t3_conv.units, t3_conv.exponent);
+    printf("conv: Expecting  inches ^ 2: %f %s^%d\n", t4_conv.value, t4_conv.units, t4_conv.exponent);
+    printf("conv: Expecting  inches ^ 2: %f %s^%d\n", t5_conv.value, t5_conv.units, t5_conv.exponent);
+
+
+    
 }
 
 int main(int argc, char *argv[]) {
