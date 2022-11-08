@@ -101,8 +101,8 @@ void evidence_measurements_conversions() {
 
 
     printf("conv: Expecting 120 inches: %f %s^%d\n", t3_conv.value, t3_conv.units, t3_conv.exponent);
-    printf("conv: Expecting  inches ^ 2: %f %s^%d\n", t4_conv.value, t4_conv.units, t4_conv.exponent);
-    printf("conv: Expecting  inches ^ 2: %f %s^%d\n", t5_conv.value, t5_conv.units, t5_conv.exponent);
+    printf("conv: Expecting 1152 in ^ 2: %f %s^%d\n", t4_conv.value, t4_conv.units, t4_conv.exponent);
+    printf("conv: Expecting 2044.8 in ^ 2: %f %s^%d\n", t5_conv.value, t5_conv.units, t5_conv.exponent);
 
 
     
