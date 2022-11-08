@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include "hw4.h"
 
 char* flip_case(char* s){
     int i = 0, length = 0;
@@ -83,4 +85,49 @@ char** matches(char* s, char* pat, unsigned int* nmatches) {
     }
     *nmatches = m;
     return res;
+}
+
+
+char* concat_strings(char** strings, unsigned int num_strings, char delim) {
+    int char_count = 0;
+    
+    //finding char count
+    for(int i = 0; i < num_strings; i++) {
+        char_count += strlen(strings[i]) + 1;
+    }
+
+    char* res = (char *)malloc(sizeof(char) * char_count);
+    int k = 0;
+
+    // setting main strings
+    for(int i = 0; i < num_strings - 1; i++) {
+        for(int j = 0; j < strlen(strings[i]); j++) {
+            res[k++] = strings[i][j];
+        }
+        res[k++] = delim;
+    }
+
+    //setting last string
+    for(int j = 0; j < strlen(strings[num_strings - 1]); j++){
+        res[k++] = strings[num_strings - 1][j];
+    }
+    res[k] = '\0';
+
+    return res;
+}
+
+
+struct measurement add_measurements(struct measurement m1, struct measurement m2) {
+    if (m1.units != m2.units){
+        printf("Error: Units Must Match: %s vs %s", m1.units, m2.units);
+        exit(1);
+    }
+    else if (m1.exponent != m2.exponent) {
+        printf("Error: Exponents Must Match: %d vs %d", m1.exponent, m2.exponent);
+        exit(1);
+    }
+    else{
+        struct measurement res = { m1.value + m2.value, m1.units, m1.exponent};
+        return res;
+    }
 }
