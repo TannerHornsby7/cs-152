@@ -43,14 +43,38 @@ void board_free(board* b) {
     free(b);
 }
 
-/*
+// prints board with specified format
+void board_show(board* b) {
+    printf("  ");
+    for(int i = 0; i < b->width; i++) {
+        printf("%d", i);
+    }
+    printf("\n  ");
+     for(int i = 0; i < b->width; i++) {
+        printf(" ");
+    }
+    printf("\n");
 
-board show
-boad get
-board set
+    for(int j = 0; j < b->height; j++) {
+        printf("%d ", j);
+        for(int i = 0; i < b->width; i++) {
+            cell t_cell = b->u.matrix[j][i];
+            if(t_cell == EMPTY) {
+                printf(".");
+            } else if (t_cell == BLACK) {
+                printf("*");
+            } else {
+                printf("o");
+            }
+        }
+        printf("\n");
+    }
+}
 
-new game
-drop piece
-magenetize
-game outcome
-*/
+cell board_get(board* b, pos p) {
+    return b->u.matrix[p.r][p.c];
+}
+
+void board_set(board* b, pos p, cell c) {
+    b->u.matrix[p.r][p.c] = c;
+}

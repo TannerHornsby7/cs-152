@@ -41,10 +41,27 @@ void evidence_board() {
         }
     }
 
+    printf("show: Showing matrix b4:\n");
+    board_show(b4);
+    printf("setting top left to black and bottom right to white\n");
+    pos tleft = {0 , 0};
+    pos bright = {3, 3};
+    board_set(b4, tleft, BLACK);
+    board_set(b4, bright, WHITE);
+    board_show(b4);
+    printf("get: getting top left element 1 : %d\n", board_get(b4, tleft));
+    printf("get: getting bottom right element 2 : %d\n", board_get(b4, bright));
+
+
+
     printf("\n");
 
 }
 
+
+evidence_logic(){
+    
+}
 /* main: run the evidence functions above */
 int main(int argc, char *argv[]) {
     evidence_pos();
