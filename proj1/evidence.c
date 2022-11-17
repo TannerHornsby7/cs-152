@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include "board.h"
+#include "logic.h"
 #include "pos.h"
 
 /* evidence pos */
@@ -59,12 +61,23 @@ void evidence_board() {
 }
 
 
-evidence_logic(){
-    
+game* new_game(unsigned int square, unsigned int maglock, unsigned int width,
+               unsigned int height, enum type type);
+
+void evidence_logic(){
+    // game* g1 = new_game(2, 0, 3, 3, BITS); // type error
+    // game* g2 = new_game(2, 0, 1, 1, MATRIX); // square error
+    game* g3 = new_game(2, 0, 3, 3, MATRIX); // 3x3 board with 2x2 square
+    // board_show(g3->b); 
+    while (drop_piece(g3, 0)) {
+    }
+    drop_piece(g3, 1);
+    board_show(g3->b);
 }
 /* main: run the evidence functions above */
 int main(int argc, char *argv[]) {
-    evidence_pos();
-    evidence_board();
+    // evidence_pos();
+    // evidence_board();
+    evidence_logic();
     return 0;
 }

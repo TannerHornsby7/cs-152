@@ -73,6 +73,13 @@ void board_show(board* b) {
 
 cell board_get(board* b, pos p) {
     return b->u.matrix[p.r][p.c];
+    // if(p.r < b->height && p.c < b->width) {
+        
+    // }
+    // else {
+    //     fprintf(stderr, "board_get: invalid cell address: %d %d\n", p.r, p.c);
+    //     exit(1);
+    // }
 }
 
 void board_set(board* b, pos p, cell c) {
