@@ -73,6 +73,11 @@ void evidence_logic(){
     }
     drop_piece(g3, 1);
     board_show(g3->b);
+    pos tr = make_pos(0, g3->b->width - 1);
+    board_set(g3->b, tr, BLACK);
+    board_show(g3->b);
+    magnetize(g3);
+    board_show(g3->b);
 }
 /* main: run the evidence functions above */
 int main(int argc, char *argv[]) {
