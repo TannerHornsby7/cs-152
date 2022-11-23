@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include "board.h"
 
 board* board_new(unsigned int width, unsigned int height, enum type type) {
@@ -20,15 +21,7 @@ board* board_new(unsigned int width, unsigned int height, enum type type) {
     return res;
 }
 
-/*
-The board_free function fully frees the board, including whichever internal
-representation it is using. For this and all the remaining functions, raise
-an error if the input board claims to use other than the matrix 
-representation. Because you will not encounter such boards during this phase
-of the project, the details of such boards are not specified in this
-document, and your code should immediately flag any such boards as
-unsupported.
-*/
+
 void board_free(board* b) {
     for(int i = 0; i < b->height; i++) {
         free(b->u.matrix[i]);
@@ -73,15 +66,29 @@ void board_show(board* b) {
 
 cell board_get(board* b, pos p) {
     return b->u.matrix[p.r][p.c];
-    // if(p.r < b->height && p.c < b->width) {
-        
-    // }
-    // else {
-    //     fprintf(stderr, "board_get: invalid cell address: %d %d\n", p.r, p.c);
-    //     exit(1);
-    // }
 }
 
 void board_set(board* b, pos p, cell c) {
     b->u.matrix[p.r][p.c] = c;
+}
+
+int board_validp(board *b, pos p) {
+    int valid = 1;
+    if(p.c < 0 || p.c >= b->width ) {
+        valid = 0;
+    }
+    if(p.r < 0 || p.r >= b->height) {
+        valid = 0;
+    }
+    return valid;
+}
+
+int board_full(board *b) {
+    for(int i = 0; i < b->height; i++){
+        for(int j = 0; j < b->width; j++) {
+            pos loc = {i, j};
+            if(board_get(b, loc) == EMPTY) return false;
+        }
+    }
+    return true;
 }

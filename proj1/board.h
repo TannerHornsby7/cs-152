@@ -4,6 +4,7 @@
 #include "pos.h"
 
 
+
 enum cell {
     EMPTY,
     BLACK,
@@ -44,5 +45,9 @@ void board_show(board* b);
 cell board_get(board* b, pos p);
 
 void board_set(board* b, pos p, cell c);
+
+int board_validp(board *b, pos p);
+
+int board_full(board *b);
 
 #endif /* BOARD_H */

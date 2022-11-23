@@ -65,6 +65,12 @@ game* new_game(unsigned int square, unsigned int maglock, unsigned int width,
                unsigned int height, enum type type);
 
 void evidence_logic(){
+    pos topmid = {0, 1};
+    pos topright = {0, 2};
+    pos mid = {1, 1};
+    pos botright = {2, 2};
+    pos toolow = {-1, 4};
+    pos toohigh = {0, 40000};
     // game* g1 = new_game(2, 0, 3, 3, BITS); // type error
     // game* g2 = new_game(2, 0, 1, 1, MATRIX); // square error
     game* g3 = new_game(2, 0, 3, 3, MATRIX); // 3x3 board with 2x2 square
@@ -78,6 +84,23 @@ void evidence_logic(){
     board_show(g3->b);
     magnetize(g3);
     board_show(g3->b);
+    printf("Expecting 0: %d\n", game_outcome(g3));
+    board_set(g3->b, topmid, BLACK);
+    board_set(g3->b, topright, BLACK);
+    board_show(g3->b);
+    magnetize(g3);
+    board_show(g3->b);
+    printf("Expecting 1: %d\n", board_validp(g3->b, topmid));
+    printf("Expecting 0: %d\n", board_validp(g3->b, toolow));
+    printf("Expecting 0: %d\n", board_validp(g3->b, toohigh));
+    printf("Expecting 1: %d\n", check_square(g3, mid));
+    printf("Expecting 0: %d\n", check_square(g3, botright));
+    printf("Expecting 1: %d\n", game_outcome(g3));
+
+    
+
+
+
 }
 /* main: run the evidence functions above */
 int main(int argc, char *argv[]) {

@@ -43,4 +43,6 @@ bool magnetize(game* g);
 
 outcome game_outcome(game* g);
 
+int check_square(game* g, pos loc);
+
 #endif /* LOGIC_H */

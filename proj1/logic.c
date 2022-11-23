@@ -4,11 +4,6 @@
 #include "board.h"
 #include "logic.h"
 
-/*
-magenetize
-game outcome
-*/
-
 game* new_game(unsigned int square, unsigned int maglock, unsigned int width,
                unsigned int height, enum type type) {
     if (type == BITS) {
@@ -62,26 +57,6 @@ bool drop_piece(game* g, unsigned int column) {
     return true;
 }
 
-// shift elements of the row array
-// call the same shift on the columns
-// create shift helper that takes a row of cells, gravity bool, and a player
-// this helper does the corresponding shift and returns true if a shift occured
-// 
-// magnetize
-// call row shifts
-// call gravity shifts
-// call switch_turn done
-/*
-for(int i = 0; i < height; i++) {
-    
-}
-*/
-
-// set base to the bottom column element
-// start index at base
-// if index is empty, switch it with the element above it
-// iterate through the whole column doing this, reseting the base each time
-
 void swp(board* b, pos loc1, pos loc2) {
     enum cell val1 = board_get(b, loc1);
     enum cell val2 = board_get(b, loc2);
@@ -100,7 +75,16 @@ void col_shift(board* b, int col, int i) {
     }
 }
 
-// void row_shift(board* b, int row, int i) {
+// void b_mag(board* b, int row, int i) {
+//     if(i = b->width - 1) return;
+//     pos p1, p2;
+//     for(int j = i; j >= 0; j--) {
+//         p1 = make_pos(j, row);
+//         p2 = make_pos(j + 1, row);
+//     }
+// }
+
+// void w_mag(board* b, int row, int i) {
 //     if(i = b->width - 1) return;
 //     pos p1, p2;
 //     for(int j = i; j >= 0; j--) {
@@ -125,6 +109,78 @@ void mag_grav(board* b) {
 }
 
 bool magnetize(game* g) {
+    enum cell whose = switch_turns(g);
+    // if(whose == BLACK) {
+    //     b_mag();
+    // } else {
+    //     w_mag();
+    // }
     mag_grav(g->b);
     return true;
 }
+
+
+int check_square(game* g, pos loc) {
+    unsigned int s = g->square;
+    cell main_square = board_get(g->b, loc);
+    for(int i = 0; i < s; i++) { //starts from top left
+        for(int j = 0; j < s; j++) {
+            pos new_loc = {i + loc.r, j + loc.c};
+            if(!board_validp(g->b, new_loc)){
+                return 0;
+            } else {
+                cell new_square = board_get(g->b, new_loc);
+                if(new_square != main_square) return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+// iterate through arr h - s and w - s calling check square on each loc
+
+outcome game_outcome(game* g) {
+    int s = g->square, h = g->b->height, w = g->b->width, bw = 0, ww = 0, d = 0;
+
+    for(int i = 0; i < w; i++) {
+        for(int j = 0; j < h; j++) {
+            pos loc = {i, j};
+            if(check_square(g, loc)){
+                cell winner = board_get(g->b, loc);
+                if(winner == BLACK){
+                    bw = 1;
+                }
+                
+                if (winner == WHITE) {
+                    ww = 1;
+                }
+            };
+        }
+    }
+
+    if(bw && ww) {
+        return DRAW;
+    } else if (bw) {
+        return BLACK_WIN;
+    } else if (ww) {
+        return WHITE_WIN;
+    }
+    else {
+        if(board_full(g->b)) {
+            return DRAW;
+        } else {
+            return IN_PROGRESS;
+        }
+    }
+}
+
+// 1) game outcome
+// 2) b/w mag
+// 3) mag mag_grav
+// 4) linked list probs
+// 5) valgrind
+// 6) lecture listen
+
+// fix gravity function to move pieces based on what is magnetized
+// create b and w mag functions to pull pieces to sides
+// complete linked list practice problems
