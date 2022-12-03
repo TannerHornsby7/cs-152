@@ -71,31 +71,35 @@ void evidence_logic(){
     pos botright = {2, 2};
     pos toolow = {-1, 4};
     pos toohigh = {0, 40000};
+
     // game* g1 = new_game(2, 0, 3, 3, BITS); // type error
     // game* g2 = new_game(2, 0, 1, 1, MATRIX); // square error
     game* g3 = new_game(2, 0, 3, 3, MATRIX); // 3x3 board with 2x2 square
-    // board_show(g3->b); 
     while (drop_piece(g3, 0)) {
     }
+    
     drop_piece(g3, 1);
-    board_show(g3->b);
+    // board_show(g3->b);
     pos tr = make_pos(0, g3->b->width - 1);
-    board_set(g3->b, tr, BLACK);
-    board_show(g3->b);
-    magnetize(g3);
-    board_show(g3->b);
-    printf("Expecting 0: %d\n", game_outcome(g3));
+    // board_set(g3->b, tr, BLACK);
+    // board_show(g3->b);
+    // magnetize(g3);
+    // board_show(g3->b);
     board_set(g3->b, topmid, BLACK);
     board_set(g3->b, topright, BLACK);
     board_show(g3->b);
+    g3->maglock = 1;
+    g3->black_rem = 1;
+
     magnetize(g3);
     board_show(g3->b);
-    printf("Expecting 1: %d\n", board_validp(g3->b, topmid));
-    printf("Expecting 0: %d\n", board_validp(g3->b, toolow));
-    printf("Expecting 0: %d\n", board_validp(g3->b, toohigh));
-    printf("Expecting 1: %d\n", check_square(g3, mid));
-    printf("Expecting 0: %d\n", check_square(g3, botright));
-    printf("Expecting 1: %d\n", game_outcome(g3));
+    // printf("Expecting 0: %d\n", game_outcome(g3));
+    // printf("Expecting 1: %d\n", board_validp(g3->b, topmid));
+    // printf("Expecting 0: %d\n", board_validp(g3->b, toolow));
+    // printf("Expecting 0: %d\n", board_validp(g3->b, toohigh));
+    // printf("Expecting 1: %d\n", check_square(g3, mid));
+    // printf("Expecting 0: %d\n", check_square(g3, botright));
+    // printf("Expecting 1: %d\n", game_outcome(g3));
 
     
 

@@ -65,16 +65,6 @@ void swp(board* b, pos loc1, pos loc2) {
     board_set(b, loc2, val1);
 }
 
-void col_shift(board* b, int col, int i) {
-    if(i == b->height - 1) return;
-    pos p1, p2;
-    for(int j = i; j >= 0; j--) {
-        p1 = make_pos(j, col);
-        p2 = make_pos(j + 1, col);
-        swp(b, p1, p2);
-    }
-}
-
 // void b_mag(board* b, int row, int i) {
 //     if(i = b->width - 1) return;
 //     pos p1, p2;
@@ -93,19 +83,40 @@ void col_shift(board* b, int col, int i) {
 //     }
 // }
 
-void mag_grav(board* b) {
-    for(int i = 0; i < b->width; i++) {
-        for(int j = 0; j < b->height-1; j++)
-        { // iterate through the column elements, if
-          // any are empty,
-            pos p1 = make_pos(j, i);
-            pos p2 = make_pos(j+1, i);
-
-            if(board_get(b, p2) == EMPTY) {
-                col_shift(b, i, j);
-            }
+void mag_grav(game* g) {
+    cell skip_piece = EMPTY;
+    if(g->maglock){
+        if(g->black_rem != 0 && g->white_rem != 0) return;
+        else if(g->black_rem != 0){
+            skip_piece = BLACK;
+        }
+        else if(g->white_rem != 0) {
+            skip_piece = WHITE;
         }
     }
+
+    // iterate through board, moving non-skip pieces down
+    for(int j = 0; j < g->b->width; j++){
+        int i = 0;
+        while(i < g->b->height - 1){
+            pos p1 = {i, j};
+            pos p2 = {i + 1, j};
+            if(board_get(g->b, p2) == EMPTY && board_get(g->b, p1) != skip_piece) {
+                swp(g->b, p1, p2);
+                printf("hello");
+            }
+            i++;
+        }
+    }
+    //     for(int i = g->b->height - 2; i >= 0; i--) {
+    //         pos p1 = {i, j};
+    //         pos p2 = {i + 1, j};
+
+    //         if(board_get(g->b, p2) == NULL && board_get(g->b, p1) != skip_piece) {
+    //             swp(g->b, p1, p2);
+    //         }
+    //     }
+    // }
 }
 
 bool magnetize(game* g) {
@@ -115,7 +126,7 @@ bool magnetize(game* g) {
     // } else {
     //     w_mag();
     // }
-    mag_grav(g->b);
+    mag_grav(g);
     return true;
 }
 
@@ -174,7 +185,6 @@ outcome game_outcome(game* g) {
     }
 }
 
-// 1) game outcome
 // 2) b/w mag
 // 3) mag mag_grav
 // 4) linked list probs
