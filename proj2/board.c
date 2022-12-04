@@ -31,11 +31,39 @@ void board_free(board* b) {
     free(b);
 }
 
+/*
+
+The board may be more than ten rows or columns in size. 
+If so, the indices should move on to using capital letters. 
+
+The label for index 10 should be A, for index 11 should be B, and so on. 
+Go all the way to the end of the alphabet if needed. If you have more 
+than 36 rows or columns, 
+
+then the lower-case letters should be used next. 
+Once these characters are exhausted, 
+
+use ? for all of the remaining rows or 
+columns, if any, to indicate that you have run out of labels.
+
+*/
+
 // prints board with specified format
 void board_show(board* b) {
+    char* start = 'A';
     printf("  ");
     for(int i = 0; i < b->width; i++) {
-        printf("%d", i);
+        if(i < 10){
+            printf("%d", i);
+        } else if (10 <= i && i < 36) {
+            start = 'A';
+            printf("%c", start + (i - 10));
+        } else if (36 <= i && i < 62) {
+            start = 'a';
+            printf("%c", start + (i - 36));
+        } else if (i >= 62) {
+            printf("?");
+        }
     }
     printf("\n  ");
      for(int i = 0; i < b->width; i++) {
@@ -44,7 +72,18 @@ void board_show(board* b) {
     printf("\n");
 
     for(int j = 0; j < b->height; j++) {
-        printf("%d ", j);
+        if(j < 10){
+            printf("%d", j);
+        } else if (10 <= j && j < 36) {
+            start = 'A';
+            printf("%c", start + (j - 10));
+        } else if (36 <= j && j < 62) {
+            start = 'a';
+            printf("%c", start + (j - 36));
+        } else if (j >= 62) {
+            printf("?");
+        }
+
         for(int i = 0; i < b->width; i++) {
             cell t_cell = b->u.matrix[j][i];
             if(t_cell == EMPTY) {
