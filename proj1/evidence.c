@@ -65,6 +65,8 @@ game* new_game(unsigned int square, unsigned int maglock, unsigned int width,
                unsigned int height, enum type type);
 
 void evidence_logic(){
+
+    // CONSTANTS FOR TESTS
     pos topmid = {0, 1};
     pos topright = {0, 2};
     pos mid = {1, 1};
@@ -72,27 +74,60 @@ void evidence_logic(){
     pos toolow = {-1, 4};
     pos toohigh = {0, 40000};
 
+
+    /*
+    
+    TESTING: GAME CREATION
+
+    */
+
     // game* g1 = new_game(2, 0, 3, 3, BITS); // type error
     // game* g2 = new_game(2, 0, 1, 1, MATRIX); // square error
-    game* g3 = new_game(2, 0, 3, 3, MATRIX); // 3x3 board with 2x2 square
+    game* g3 = new_game(2, 3, 3, 3, MATRIX); // 3x3 board with 2x2 square
+
+    /*
+    
+    TESTING: GAME FUNCTIONALITY 1. drop piece 2. mag_grav 3. magnetize
+
+    */
+
+    // 1) drop_piece
     while (drop_piece(g3, 0)) {
     }
-    
     drop_piece(g3, 1);
     // board_show(g3->b);
+    // passes all test! (fills col with alternating game pieces)
+
+    // 2) mag_grav
     pos tr = make_pos(0, g3->b->width - 1);
     // board_set(g3->b, tr, BLACK);
     // board_show(g3->b);
     // magnetize(g3);
     // board_show(g3->b);
-    board_set(g3->b, topmid, BLACK);
+
+    // passes all tests! (when called, brings pieces down to lowest possible level)
+
+    // 3) magnetize
+
     board_set(g3->b, topright, BLACK);
     board_show(g3->b);
-    g3->maglock = 1;
-    g3->black_rem = 1;
-
+    printf("Expecting Whites turn(1): %d\n", g3->player);
+    printf("Expecting %d : %d\n", 0, g3->white_rem);
+    printf("Expecting %d : %d\n", 0, g3->black_rem);
     magnetize(g3);
+    printf("Expecting Blacks turn(0): %d\n", g3->player);
+    printf("Expecting %d : %d\n", g3->maglock, g3->white_rem);
+    printf("Expecting %d : %d\n", 0, g3->black_rem);
     board_show(g3->b);
+
+    // passes all tests!
+
+    /*
+    
+    TESTING: GAME OUTCOME
+
+    */
+
     // printf("Expecting 0: %d\n", game_outcome(g3));
     // printf("Expecting 1: %d\n", board_validp(g3->b, topmid));
     // printf("Expecting 0: %d\n", board_validp(g3->b, toolow));
@@ -100,16 +135,10 @@ void evidence_logic(){
     // printf("Expecting 1: %d\n", check_square(g3, mid));
     // printf("Expecting 0: %d\n", check_square(g3, botright));
     // printf("Expecting 1: %d\n", game_outcome(g3));
-
-    
-
-
-
 }
+
 /* main: run the evidence functions above */
 int main(int argc, char *argv[]) {
-    // evidence_pos();
-    // evidence_board();
     evidence_logic();
     return 0;
 }

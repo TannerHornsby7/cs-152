@@ -30,13 +30,21 @@ game* new_game(unsigned int square, unsigned int maglock, unsigned int width,
 enum cell switch_turns(game* g) {
     enum cell move;
     if (g->player == BLACKS_TURN) {
+        if(g->black_rem > 0) {
+            g->black_rem--;
+            g->player = WHITES_TURN;
+            return WHITE;
+        }
         move = BLACK;
         g->player = WHITES_TURN;
-        g->black_rem--;
     } else {
+        if(g->white_rem > 0) {
+            g->white_rem--;
+            g->player = BLACKS_TURN;
+            return BLACK;
+        }
         move = WHITE;
         g->player = BLACKS_TURN;
-        g->white_rem--;
     }
 
     return move;
@@ -65,34 +73,14 @@ void swp(board* b, pos loc1, pos loc2) {
     board_set(b, loc2, val1);
 }
 
-// void b_mag(board* b, int row, int i) {
-//     if(i = b->width - 1) return;
-//     pos p1, p2;
-//     for(int j = i; j >= 0; j--) {
-//         p1 = make_pos(j, row);
-//         p2 = make_pos(j + 1, row);
-//     }
-// }
-
-// void w_mag(board* b, int row, int i) {
-//     if(i = b->width - 1) return;
-//     pos p1, p2;
-//     for(int j = i; j >= 0; j--) {
-//         p1 = make_pos(j, row);
-//         p2 = make_pos(j + 1, row);
-//     }
-// }
-
 void mag_grav(game* g) {
     cell skip_piece = EMPTY;
-    if(g->maglock){
-        if(g->black_rem != 0 && g->white_rem != 0) return;
-        else if(g->black_rem != 0){
-            skip_piece = BLACK;
-        }
-        else if(g->white_rem != 0) {
-            skip_piece = WHITE;
-        }
+    if(g->black_rem != 0 && g->white_rem != 0) return;
+    else if(g->black_rem != 0){
+        skip_piece = BLACK;
+    }
+    else if(g->white_rem != 0) {
+        skip_piece = WHITE;
     }
 
     // iterate through board, moving non-skip pieces down
@@ -103,30 +91,51 @@ void mag_grav(game* g) {
             pos p2 = {i + 1, j};
             if(board_get(g->b, p2) == EMPTY && board_get(g->b, p1) != skip_piece) {
                 swp(g->b, p1, p2);
-                printf("hello");
             }
             i++;
         }
     }
-    //     for(int i = g->b->height - 2; i >= 0; i--) {
-    //         pos p1 = {i, j};
-    //         pos p2 = {i + 1, j};
+}
 
-    //         if(board_get(g->b, p2) == NULL && board_get(g->b, p1) != skip_piece) {
-    //             swp(g->b, p1, p2);
-    //         }
-    //     }
-    // }
+void mag_white(game* g){
+    for(int j = 0; j < g->b->width - 1; j++) {
+        for(int i = 0; i < g->b->height; i++){
+            pos p1 = {i, j};
+            pos p2 = {i, j + 1};
+
+            if(board_get(g->b, p1) == WHITE && board_get(g->b, p2) == EMPTY){
+                swp(g->b, p1, p2);
+            }
+        }
+    }
+}
+
+void mag_black(game* g){
+    for(int j = g->b->width - 1; j > 0 ; j--) {
+        for(int i = 0; i < g->b->height; i++){
+            pos p1 = {i, j};
+            pos p2 = {i, j - 1};
+
+            if(board_get(g->b, p1) == BLACK && board_get(g->b, p2) == EMPTY){
+                swp(g->b, p1, p2);
+            }
+        }
+    }
 }
 
 bool magnetize(game* g) {
-    enum cell whose = switch_turns(g);
-    // if(whose == BLACK) {
-    //     b_mag();
-    // } else {
-    //     w_mag();
-    // }
+    if(g->player == WHITES_TURN && g->white_rem != 0) return false;
+    if(g->player == BLACKS_TURN && g->black_rem != 0) return false;
+    
+    if(g->player == WHITES_TURN){
+        g->white_rem = g->maglock;
+        mag_white(g);
+    } else {
+        g->black_rem = g->maglock;
+        mag_black(g);
+    }
     mag_grav(g);
+    enum cell whose = switch_turns(g);
     return true;
 }
 
@@ -147,8 +156,6 @@ int check_square(game* g, pos loc) {
     }
     return 1;
 }
-
-// iterate through arr h - s and w - s calling check square on each loc
 
 outcome game_outcome(game* g) {
     int s = g->square, h = g->b->height, w = g->b->width, bw = 0, ww = 0, d = 0;
@@ -184,13 +191,3 @@ outcome game_outcome(game* g) {
         }
     }
 }
-
-// 2) b/w mag
-// 3) mag mag_grav
-// 4) linked list probs
-// 5) valgrind
-// 6) lecture listen
-
-// fix gravity function to move pieces based on what is magnetized
-// create b and w mag functions to pull pieces to sides
-// complete linked list practice problems
