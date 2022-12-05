@@ -47,4 +47,8 @@ bool magnetize(game* g);
 // returns the outcome of a game
 outcome game_outcome(game* g);
 
+// performs gravity operation, skipping magnetized pieces
+void mag_grav(game* g);
+
+
 #endif /* LOGIC_H */

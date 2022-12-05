@@ -68,7 +68,8 @@ int main(int argc, char *argv[]) {
             printf("column index %c(%d) is outside the width of the board %d", move, index, g->b->width);
             continue;
         }
-        drop_piece(g, index);
+        if(!drop_piece(g, index)) continue;
+        mag_grav(g);
         outcome out = game_outcome(g);
 
         if(out > 0){

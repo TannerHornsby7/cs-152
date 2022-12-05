@@ -34,42 +34,53 @@ void game_free(game* g){
 
 enum cell switch_turns(game* g) {
 
+    if(g->black_rem > 0 && g->white_rem > 0) {
+        g->black_rem--;
+        g->white_rem--;
+        return switch_turns(g);
+    }
+
     // correct so that if other player is in maglock we don't switch
     enum cell move;
     if (g->player == BLACKS_TURN) {
+        g->player = WHITES_TURN;
         if(g->black_rem > 0) {
             g->black_rem--;
-            g->player = WHITES_TURN;
-            return WHITE;
+            return switch_turns(g);
         }
         move = BLACK;
-        g->player = WHITES_TURN;
     } else {
+        g->player = BLACKS_TURN;
         if(g->white_rem > 0) {
             g->white_rem--;
-            g->player = BLACKS_TURN;
-            return BLACK;
+            return switch_turns(g);
         }
         move = WHITE;
-        g->player = BLACKS_TURN;
     }
 
     return move;
 }
 
 bool drop_piece(game* g, unsigned int column) {
-    pos place = {g->b->height - 1, column};
+    pos place = {0, column};
+    pos next = {0, column};
 
     if(!board_validp(g->b, place)) {
-        printf("\ninvalid board loc dumdum\n");
+        printf("\ninvalid board location!\n");
         return false;
     }
 
-    while(board_get(g->b, place) != EMPTY) {
-        if(place.r  == 0) {
-            return false;
+    if (board_get(g->b, place) != EMPTY) {
+        printf("Column %d is full!", column);
+        return false;
+    }
+
+    for(int i = 0; i < g->b->height; i++){
+        place.r = i;
+        next.r = i + 1;
+        if(i == g->b->height - 1 || board_get(g->b, next) != EMPTY){
+            break;
         }
-        place.r--;
     }
 
     enum cell move = switch_turns(g);
@@ -87,7 +98,9 @@ void swp(board* b, pos loc1, pos loc2) {
 
 void mag_grav(game* g) {
     cell skip_piece = EMPTY;
+
     if(g->black_rem != 0 && g->white_rem != 0) return;
+
     else if(g->black_rem != 0){
         skip_piece = BLACK;
     }
@@ -95,46 +108,51 @@ void mag_grav(game* g) {
         skip_piece = WHITE;
     }
 
-    // iterate through board, moving non-skip pieces down
     for(int j = 0; j < g->b->width; j++){
-        int i = 0;
-        while(i < g->b->height - 1){
-            pos p1 = {i, j};
-            pos p2 = {i + 1, j};
-            if(board_get(g->b, p2) == EMPTY && board_get(g->b, p1) != skip_piece) {
-                swp(g->b, p1, p2);
+        for(int i = g->b->height - 1; i > 0; i--) {
+                pos above = {i - 1, j};
+                pos curr = {i, j};
+
+            while(board_validp(g->b, curr)){
+                if(board_get(g->b, curr) == EMPTY && board_get(g->b, above) != skip_piece){
+                    swp(g->b, curr, above);
+                }
+                above = curr;
+                curr.r++;
+
             }
-            i++;
         }
     }
 }
 
 void mag_white(game* g){
     for(int j = g->b->width - 1; j > 0; j--) {
-        for(int i = 0; i < g->b->height; i++){
+        for(int i = g->b->height - 1; i >= 0; i--){
             pos p1 = {i, j - 1};
             pos p2 = {i, j};
 
-            while(board_get(g->b, p1) == WHITE && board_get(g->b, p2) == EMPTY){
+            while(board_validp(g->b, p2) && (board_get(g->b, p1) == WHITE && board_get(g->b, p2) == EMPTY)){
                 swp(g->b, p1, p2);
                 p1.c = j;
                 p2.c = ++j;
             }
+            mag_grav(g);
         }
     }
 }
 
 void mag_black(game* g){
-    for(int j = 0; j < g->b->width - 1 ; j++) {
-        for(int i = 0; i < g->b->height; i++){
+    for(int j = 0; j < g->b->width - 1; j++) {
+        for(int i = g->b->height - 1; i >= 0; i--){
             pos p1 = {i, j + 1};
             pos p2 = {i, j};
 
-            while(board_get(g->b, p1) == BLACK && board_get(g->b, p2) == EMPTY){
+            while(board_validp(g->b, p2) && (board_get(g->b, p1) == BLACK && board_get(g->b, p2) == EMPTY)){
                 swp(g->b, p1, p2);
                 p1.c = j;
                 p2.c = --j;
             }
+            mag_grav(g);
         }
     }
 }
@@ -217,10 +235,20 @@ outcome game_outcome(game* g) {
 
 
 // make evidence suite
-// fix mag so that it calls mag_grav after _rem reaches zero
-// fix turn switchin so it accounts for maglock turn skips
-// fix back2back maglock segfault
+// fix mag_grav seg fault
+// fix turn alternation on maglock
+// fix back2back maglock call
 // test for any extra bugs, clean up, comment
 
-// implement bitwise representation in board_new, board_set, board_get, and play.c
+// implement bitwise representation in board_new
+//, board_set
+//, board_get
+//, and play.c
+
+
+// fix turn switchin so it accounts for maglock turn skips (done!)
+// fix mag so that it calls mag_grav after _rem reaches zero (done!)
+// fix back2back maglock segfault (done!)
+// fix alternate piece drop glitch (done!)
+
 
