@@ -173,7 +173,7 @@ bool magnetize(game* g) {
         mag_black(g);
     }
     mag_grav(g);
-    enum cell whose = switch_turns(g);
+    switch_turns(g);
     return true;
 }
 
@@ -195,7 +195,7 @@ int check_square(game* g, pos loc) {
 }
 
 outcome game_outcome(game* g) {
-    int s = g->square, h = g->b->height, w = g->b->width, bw = 0, ww = 0, d = 0;
+    int h = g->b->height, w = g->b->width, bw = 0, ww = 0;
 
     for(int i = 0; i < w; i++) {
         for(int j = 0; j < h; j++) {
@@ -237,11 +237,6 @@ outcome game_outcome(game* g) {
     }
 }
 
-
-// fix turn alternation on maglock
-// fix back2back maglock call
-// test for any extra bugs, clean up, comment
-
 // implement bitwise representation in board_new
 //, board_set
 //, board_get
@@ -254,6 +249,10 @@ outcome game_outcome(game* g) {
 // fix alternate piece drop glitch (done!)
 // fix mag_grav seg fault (done!)
 // make evidence suite (done !)
+// fix turn alternation on maglock (done !)
+// fix back2back maglock call (done!)
+// test for any extra bugs, clean up, comment
+
 
 
 

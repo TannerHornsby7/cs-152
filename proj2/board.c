@@ -4,52 +4,98 @@
 #include "board.h"
 
 board* board_new(unsigned int width, unsigned int height, enum type type) {
+
     board* res = (board *)malloc(sizeof(board));
     res->width = width;
     res->height = height;
     res->type = type;
-    cell** rmatrix = (cell **)malloc(sizeof(cell *) * height);
 
-    for(int i = 0; i < height; i++) {
-        rmatrix[i] = malloc(width * sizeof(*rmatrix[i]));
-        for(int j = 0; j < width; j++) {
-            rmatrix[i][j] = EMPTY;
+    if(type == MATRIX){
+        // cell matrix creation
+        cell** rmatrix = (cell **)malloc(sizeof(cell *) * height);
+
+        for(int i = 0; i < height; i++) {
+            rmatrix[i] = malloc(width * sizeof(*rmatrix[i]));
+            for(int j = 0; j < width; j++) {
+                rmatrix[i][j] = EMPTY;
+            }
         }
+        res->u.matrix = rmatrix;
+    } else {
+        // BITS matrix creation
+        unsigned int bits = width * height * 2;
+        unsigned int ints;
+
+        if(bits % 32 == 0) {
+            ints = bits / 32;
+        } else {
+            ints = (bits / 32) + 1;
+        }
+
+        unsigned int* barray = (unsigned int *)malloc(sizeof(unsigned int) * ints);
+        unsigned int curr_int = 0;
+        int k = 0;
+
+        for(int j = 0; j < height; j++) {
+            for(int i = 0; i < width; i ++){
+                int cell_num = (j*(width) + (i + 1));
+                if(cell_num % 17 == 0) {
+                    barray[k++] = curr_int;
+                    curr_int = 0;
+                    printf("\n");
+                }
+                printf("10");
+                curr_int = curr_int | 2 << (2 * cell_num - 1);
+            }
+        }
+        barray[k] = curr_int;
+
+        printf("\nprinting barray contents:\n");
+        for(int i = 0; i < k + 1; i++) {
+            printf("\n%d, ", barray[i]);
+        }
+        printf("\n");
+        res->u.bits = barray;
     }
-    
-    res->u.matrix = rmatrix;
+
     return res;
 }
 
 
 void board_free(board* b) {
-    for(int i = 0; i < b->height; i++) {
+    
+    if (b->type == MATRIX) {
+        for(int i = 0; i < b->height; i++) {
         free(b->u.matrix[i]);
+        }
+        free(b->u.matrix);
+    } else {
+        free(b->u.bits);
     }
 
-    free(b->u.matrix);
     free(b);
 }
 
-/*
+cell board_get(board* b, pos p) {
+    if(b->type == MATRIX) {
+        return b->u.matrix[p.r][p.c];
+    }
+    return WHITE;
+}
 
-The board may be more than ten rows or columns in size. 
-If so, the indices should move on to using capital letters. 
+void board_set(board* b, pos p, cell c) {
+    if(b->type == MATRIX) {
+        b->u.matrix[p.r][p.c] = c;
+    }
+    // } else {
 
-The label for index 10 should be A, for index 11 should be B, and so on. 
-Go all the way to the end of the alphabet if needed. If you have more 
-than 36 rows or columns, 
+    // }
+}
 
-then the lower-case letters should be used next. 
-Once these characters are exhausted, 
-
-use ? for all of the remaining rows or 
-columns, if any, to indicate that you have run out of labels.
-
-*/
 
 // prints board with specified format
 void board_show(board* b) {
+    printf("\n");
     char start = 'A';
     printf("  ");
     for(int i = 0; i < b->width; i++) {
@@ -65,27 +111,24 @@ void board_show(board* b) {
             printf("?");
         }
     }
-    printf("\n  ");
-     for(int i = 0; i < b->width; i++) {
-        printf(" ");
-    }
     printf("\n");
 
     for(int j = 0; j < b->height; j++) {
         if(j < 10){
-            printf("%d", j);
+            printf("%d ", j);
         } else if (10 <= j && j < 36) {
             start = 'A';
-            printf("%c", start + (j - 10));
+            printf("%c ", start + (j - 10));
         } else if (36 <= j && j < 62) {
             start = 'a';
-            printf("%c", start + (j - 36));
+            printf("%c ", start + (j - 36));
         } else if (j >= 62) {
-            printf("?");
+            printf("? ");
         }
 
         for(int i = 0; i < b->width; i++) {
-            cell t_cell = b->u.matrix[j][i];
+            pos spot = {j, i};
+            cell t_cell = board_get(b, spot);
             if(t_cell == EMPTY) {
                 printf(".");
             } else if (t_cell == BLACK) {
@@ -96,14 +139,6 @@ void board_show(board* b) {
         }
         printf("\n");
     }
-}
-
-cell board_get(board* b, pos p) {
-    return b->u.matrix[p.r][p.c];
-}
-
-void board_set(board* b, pos p, cell c) {
-    b->u.matrix[p.r][p.c] = c;
 }
 
 int board_validp(board *b, pos p) {
