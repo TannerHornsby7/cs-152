@@ -50,7 +50,7 @@ columns, if any, to indicate that you have run out of labels.
 
 // prints board with specified format
 void board_show(board* b) {
-    char* start = 'A';
+    char start = 'A';
     printf("  ");
     for(int i = 0; i < b->width; i++) {
         if(i < 10){

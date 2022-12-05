@@ -33,6 +33,8 @@ void game_free(game* g){
 }
 
 enum cell switch_turns(game* g) {
+
+    // correct so that if other player is in maglock we don't switch
     enum cell move;
     if (g->player == BLACKS_TURN) {
         if(g->black_rem > 0) {
@@ -58,13 +60,18 @@ enum cell switch_turns(game* g) {
 bool drop_piece(game* g, unsigned int column) {
     pos place = {g->b->height - 1, column};
 
+    if(!board_validp(g->b, place)) {
+        printf("\ninvalid board loc dumdum\n");
+        return false;
+    }
+
     while(board_get(g->b, place) != EMPTY) {
         if(place.r  == 0) {
             return false;
         }
         place.r--;
     }
-    
+
     enum cell move = switch_turns(g);
     board_set(g->b, place, move);
     return true;
@@ -103,26 +110,30 @@ void mag_grav(game* g) {
 }
 
 void mag_white(game* g){
-    for(int j = 0; j < g->b->width - 1; j++) {
+    for(int j = g->b->width - 1; j > 0; j--) {
         for(int i = 0; i < g->b->height; i++){
-            pos p1 = {i, j};
-            pos p2 = {i, j + 1};
+            pos p1 = {i, j - 1};
+            pos p2 = {i, j};
 
-            if(board_get(g->b, p1) == WHITE && board_get(g->b, p2) == EMPTY){
+            while(board_get(g->b, p1) == WHITE && board_get(g->b, p2) == EMPTY){
                 swp(g->b, p1, p2);
+                p1.c = j;
+                p2.c = ++j;
             }
         }
     }
 }
 
 void mag_black(game* g){
-    for(int j = g->b->width - 1; j > 0 ; j--) {
+    for(int j = 0; j < g->b->width - 1 ; j++) {
         for(int i = 0; i < g->b->height; i++){
-            pos p1 = {i, j};
-            pos p2 = {i, j - 1};
+            pos p1 = {i, j + 1};
+            pos p2 = {i, j};
 
-            if(board_get(g->b, p1) == BLACK && board_get(g->b, p2) == EMPTY){
+            while(board_get(g->b, p1) == BLACK && board_get(g->b, p2) == EMPTY){
                 swp(g->b, p1, p2);
+                p1.c = j;
+                p2.c = --j;
             }
         }
     }
@@ -143,7 +154,6 @@ bool magnetize(game* g) {
     enum cell whose = switch_turns(g);
     return true;
 }
-
 
 int check_square(game* g, pos loc) {
     unsigned int s = g->square;
@@ -167,7 +177,7 @@ outcome game_outcome(game* g) {
 
     for(int i = 0; i < w; i++) {
         for(int j = 0; j < h; j++) {
-            pos loc = {i, j};
+            pos loc = {j, i};
             if(check_square(g, loc)){
                 cell winner = board_get(g->b, loc);
                 if(winner == BLACK){
@@ -182,17 +192,21 @@ outcome game_outcome(game* g) {
     }
 
     if(bw && ww) {
+        board_show(g->b);
         game_free(g);
         return DRAW;
     } else if (bw) {
+        board_show(g->b);
         game_free(g);
         return BLACK_WIN;
     } else if (ww) {
+        board_show(g->b);
         game_free(g);
         return WHITE_WIN;
     }
     else {
         if(board_full(g->b)) {
+            board_show(g->b);
             game_free(g);
             return DRAW;
         } else {
@@ -200,3 +214,13 @@ outcome game_outcome(game* g) {
         }
     }
 }
+
+
+// make evidence suite
+// fix mag so that it calls mag_grav after _rem reaches zero
+// fix turn switchin so it accounts for maglock turn skips
+// fix back2back maglock segfault
+// test for any extra bugs, clean up, comment
+
+// implement bitwise representation in board_new, board_set, board_get, and play.c
+
