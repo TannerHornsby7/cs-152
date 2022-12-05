@@ -43,19 +43,23 @@ enum cell switch_turns(game* g) {
     // correct so that if other player is in maglock we don't switch
     enum cell move;
     if (g->player == BLACKS_TURN) {
-        g->player = WHITES_TURN;
         if(g->black_rem > 0) {
             g->black_rem--;
+            g->player = BLACKS_TURN;
             return switch_turns(g);
         }
         move = BLACK;
+        if(g->white_rem == 0) g->player = WHITES_TURN;
+        else g->white_rem--;
     } else {
-        g->player = BLACKS_TURN;
         if(g->white_rem > 0) {
             g->white_rem--;
+            g->player = BLACKS_TURN;
             return switch_turns(g);
         }
         move = WHITE;
+        if(g->white_rem == 0) g->player = BLACKS_TURN;
+        else g->black_rem--;
     }
 
     return move;
@@ -234,8 +238,6 @@ outcome game_outcome(game* g) {
 }
 
 
-// make evidence suite
-// fix mag_grav seg fault
 // fix turn alternation on maglock
 // fix back2back maglock call
 // test for any extra bugs, clean up, comment
@@ -250,5 +252,9 @@ outcome game_outcome(game* g) {
 // fix mag so that it calls mag_grav after _rem reaches zero (done!)
 // fix back2back maglock segfault (done!)
 // fix alternate piece drop glitch (done!)
+// fix mag_grav seg fault (done!)
+// make evidence suite (done !)
+
+
 
 

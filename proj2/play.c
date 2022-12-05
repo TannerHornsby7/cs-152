@@ -17,18 +17,40 @@ unsigned int label_to_index(char move){
     else return 0;
 }
 
+// return 1 if game over, 0 if game continue;
+int wc(game* g){
+    outcome out = game_outcome(g);
+
+    if(out > 0){
+        if(out == 1) {
+            printf("BLACK WINS\n");
+        }
+        else if(out == 2) {
+            printf("WHITE WINS!!\n");
+        }
+        else {
+            printf("DRAW!!!\n");
+        }
+        return 1;
+    } else {
+        return 0;
+    }
+}
 //-h 3 -w 4 -s 2 -l 5
 int main(int argc, char *argv[]) {
     // initializing command line args
     unsigned int s, l, w, h;
+
     if(argc < 9) {
         printf("Too few arguments: %d", argc);
         exit(1);
     }
+
     if(argc > 9) {
         printf("Too many arguments: %d", argc);
         exit(1);
     }
+
     for(int i = 1; i < argc; i++){
         if(!strcmp(argv[i], "-s")) s = atoi(argv[i+1]);
         if(!strcmp(argv[i], "-l")) l = atoi(argv[i+1]);
@@ -48,6 +70,7 @@ int main(int argc, char *argv[]) {
 
         if(move == '!'){
             magnetize(g);
+            if(wc(g)) return 0;
             continue;
         } 
 
@@ -59,36 +82,18 @@ int main(int argc, char *argv[]) {
             continue;
         }
 
-        // col full
-        // col off board
-
-
         unsigned int index = label_to_index(move);
         if(index >= g->b->width) {
             printf("column index %c(%d) is outside the width of the board %d", move, index, g->b->width);
             continue;
         }
+
+
         if(!drop_piece(g, index)) continue;
+
         mag_grav(g);
-        outcome out = game_outcome(g);
 
-        if(out > 0){
-            if(out == 1) {
-                printf("BLACK WINS\n");
-                break;
-            }
-            if(out == 2) {
-                printf("WHITE WINS!!\n");
-                break;
-            }
-            else {
-                printf("DRAW!!!\n");
-                break;
-            }
-            return 0;
-
-        }
+        if(wc(g)) return 0;
     }
-
     return 0;
 }
