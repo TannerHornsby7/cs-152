@@ -21,33 +21,40 @@ void evidence_pos() {
 /* evidence board */
 void evidence_board() {
     // new free show set get
-    // board* b1 = board_new(1, 2, MATRIX);
-    board* b2 = board_new(4, 5, BITS);
+    board* b1 = board_new(1, 2, MATRIX);
+    board* b2 = board_new(6, 8, BITS);
     // board* b3 = board_new(-2, 4, MATRIX);
-    // board* b4 = board_new(4, 4, MATRIX);
+    board* b4 = board_new(4, 4, MATRIX);
+    board* b5 = board_new(4, 4, BITS);
+    // board* b6 = board_new(6, 8, BITS);
+    pos tleft = {0 , 0};
+    pos bright = {3, 3};
+
+
 
 
     printf("*** Testing: Board ***\n");
-    // printf("new: 1 x 2 M = %d x %d %d \n", b1->height, b1->width, b1->type);
-    printf("new: 4 x 4 B = %d x %d %d \n", b2->height, b2->width, b2->type);
-    // printf("new: 4 x 4 M = %d x %d %d \n", b4->height, b4->width, b4->type);
+    printf("new: 1 x 2 M = %d x %d %d \n", b1->width, b1->height, b1->type);
+    printf("new: 6 x 8 B = %d x %d %d \n", b2->width, b2->height, b2->type);
+    printf("new: 4 x 4 M = %d x %d %d \n", b4->width, b4->height, b4->type);
+    printf("new: 4 x 4 M = %d x %d %d \n", b5->width, b5->height, b5->type);
     printf("\n");
 
-    // printf("show: Showing matrix b4:\n");
-    // board_show(b2);
+    printf("show: Showing matrix b1:\n");
+    board_show(b1);
+    printf("show: Showing matrix b2:\n");
+    board_show(b2);
+    board_set(b2, tleft, WHITE);
+    board_show(b2);
+    board_set(b2, bright, BLACK);
+    board_show(b2);
     // printf("setting top left to black and bottom right to white\n");
-    // pos tleft = {0 , 0};
     // pos bright = {3, 3};
     // board_set(b4, tleft, BLACK);
     // board_set(b4, bright, WHITE);
     // board_show(b4);
     // printf("get: getting top left element 1 : %d\n", board_get(b4, tleft));
     // printf("get: getting bottom right element 2 : %d\n", board_get(b4, bright));
-
-
-
-    printf("\n");
-
 }
 
 void evidence_new_game(){

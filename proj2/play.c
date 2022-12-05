@@ -39,14 +39,14 @@ int wc(game* g){
 //-h 3 -w 4 -s 2 -l 5
 int main(int argc, char *argv[]) {
     // initializing command line args
-    unsigned int s, l, w, h;
+    unsigned int s, l, w, h, r;
 
-    if(argc < 9) {
+    if(argc < 10) {
         printf("Too few arguments: %d", argc);
         exit(1);
     }
 
-    if(argc > 9) {
+    if(argc > 10) {
         printf("Too many arguments: %d", argc);
         exit(1);
     }
@@ -56,10 +56,12 @@ int main(int argc, char *argv[]) {
         if(!strcmp(argv[i], "-l")) l = atoi(argv[i+1]);
         if(!strcmp(argv[i], "-w")) w = atoi(argv[i+1]);
         if(!strcmp(argv[i], "-h")) h = atoi(argv[i+1]);
+        if(!strcmp(argv[i], "-b")) r = BITS;
+        if(!strcmp(argv[i], "-m")) r = MATRIX;
 
     }
 
-    game* g = new_game(s, l, w, h, MATRIX);
+    game* g = new_game(s, l, w, h, r);
     char move;
 
     while(true){

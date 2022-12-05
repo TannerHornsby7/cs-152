@@ -42,19 +42,13 @@ board* board_new(unsigned int width, unsigned int height, enum type type) {
                 if(cell_num % 17 == 0) {
                     barray[k++] = curr_int;
                     curr_int = 0;
-                    printf("\n");
+                    // printf("\n");
                 }
-                printf("10");
-                curr_int = curr_int | 2 << (2 * cell_num - 1);
+                // printf("10");
+                curr_int = curr_int | 0 << (2 * cell_num - 1);
             }
         }
         barray[k] = curr_int;
-
-        printf("\nprinting barray contents:\n");
-        for(int i = 0; i < k + 1; i++) {
-            printf("\n%d, ", barray[i]);
-        }
-        printf("\n");
         res->u.bits = barray;
     }
 
@@ -79,17 +73,60 @@ void board_free(board* b) {
 cell board_get(board* b, pos p) {
     if(b->type == MATRIX) {
         return b->u.matrix[p.r][p.c];
+    } else {
+        // BITS matrix creation
+
+        // multiply p.r by p->width
+        // add one to p.c
+        // val = b->u.bits[]
+
+        unsigned int bitindex = p.r * b->width + p.c + 1; // pos's bit loc
+        unsigned int val = (b->u.bits[bitindex / 16] >> 2 * (bitindex % 16)) & 3;
+        cell tmp = EMPTY;
+        switch (val)
+        {
+        case 0:
+            tmp = EMPTY;
+            break;
+        case 1:
+            tmp = BLACK;
+            break;
+        case 2:
+            tmp = WHITE;
+            break;
+        }
+
+        return tmp;
     }
-    return WHITE;
 }
 
 void board_set(board* b, pos p, cell c) {
     if(b->type == MATRIX) {
         b->u.matrix[p.r][p.c] = c;
-    }
-    // } else {
+    } else {
+        // BITS matrix creation
 
-    // }
+        // multiply p.r by p->width
+        // add one to p.c
+        // val = b->u.bits[]
+
+        unsigned int bitindex = p.r * b->width + p.c + 1; // pos's bit loc
+        cell tmp = EMPTY;
+        switch (c)
+        {
+        case EMPTY:
+            tmp = 0;
+            break;
+        case BLACK:
+            tmp = 1;
+            break;
+        case WHITE:
+            tmp = 2;
+            break;
+        }
+
+        b->u.bits[bitindex / 16] |= tmp << 2 * (bitindex % 16);
+    }
 }
 
 
